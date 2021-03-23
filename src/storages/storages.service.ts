@@ -1,9 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { listStorage } from './storage.mock'
 
 @Injectable()
 export class StoragesService {
+
     private storages = listStorage;
+    //constructor(@InjectModel('storages') private readonly storageModel: Model<Storage>){};
 
     public getStorgesAll(){
         return this.storages;

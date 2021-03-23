@@ -6,7 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://admin:password@localhost:2277/test'),
+    MongooseModule.forRoot('mongodb://admin:password@localhost:2277/admin'),
     StoragesModule
   ],
   controllers:[AppController],
