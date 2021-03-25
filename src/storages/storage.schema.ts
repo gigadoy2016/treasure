@@ -1,8 +1,9 @@
 import * as mongoose from 'mongoose';
 
 export const StorageSchema = new mongoose.Schema({
-    id: Number,
+    id: String,
     name: String,
     created: Date,
-    status: Number
+    status: Number,
+    lastUpdated: Date
 });

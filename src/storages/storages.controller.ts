@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { StoragesService } from './storages.service'
+import { StorageDto } from './storage.dto'
+import { Query } from 'mongoose';
 
 @Controller('storages')
 export class StoragesController {
@@ -7,15 +9,37 @@ export class StoragesController {
     }
 
     @Get()
-    async getStorage(){
+    public async getStorage(){
+        console.log(Date()+":>Storage:Get All: "+Date());
         return this.storageService.getStorgesAll();
     }
 
+    @Post()
+    public postStorge(@Body() obj: StorageDto){
+        console.log(Date()+":>Storage:Post Body JSON: ");
+        return this.storageService.postStorge(obj);
+    }
+
     @Get(':id')
-    getOne(@Param('id') id:number){
-    //async getOne(@Param('id') id:number){
-        console.log(id);
-        return this.storageService.getStorgeById(id);
+    public getStorageById(@Param('id') id:string){
+        console.log(Date()+ ":>Storage:Get Obj by ID: "+id);
+
+        const found = this.storageService.getStorgeById(id);
+        if(!found){
+            throw new NotFoundException(`Storage with id:${id} not found`);
+        }
+        return found;
+    }
+
+    @Get('/del/:id')
+    public deleteStorageById(@Param('id') id:string){
+        console.log(Date()+ ":>Storage:Delete Obj by ID: "+id);
+        return this.storageService.deleteStorage(id);;
+    }
+
+    @Put(':id')
+    public putStorage( @Param('id') id:string){
+
     }
 
 }
