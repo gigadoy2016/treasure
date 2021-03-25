@@ -1,7 +1,9 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { listStorage } from './storage.mock'
+import { listStorage } from './storage.mock';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { iStorage } from './storage.interface';
+import { StorageDto } from './storage.dto'
 
 @Injectable()
 export class StoragesService {
@@ -11,7 +13,7 @@ export class StoragesService {
 
     public getStorgesAll(){
         return this.storages;
-    }
+    } 
 
     public getStorgeById( id:string ){
         const found = this.storages.find(item => item.id ===id)
