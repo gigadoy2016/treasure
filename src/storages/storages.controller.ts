@@ -35,6 +35,6 @@ export class StoragesController {
     @Get('/del/:id')
     public deleteStorageById(@Param('id') id:string){
         console.log(Date()+ ":>Storage:Delete Obj by ID: "+id);
-        return this.storageService.deleteStorage(id);;
+        return this.storageService.deleteStorage(id);
     }
 }
