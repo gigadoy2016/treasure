@@ -1,5 +1,4 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { listStorage } from './storage.mock';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { iStorage } from './storage.interface';
@@ -7,49 +6,50 @@ import { StorageDto } from './storage.dto'
 
 @Injectable()
 export class StoragesService {
-    private storages = listStorage;
+    
+    constructor(@InjectModel('Storage') private readonly storageModel:Model<iStorage>){}
 
-    //constructor(@InjectModel('storages') private readonly storageModel: Model<Storage>){};
-
-    public getStorgesAll(){
-        return this.storages;
+    public async getStorgesAll(): Promise<StorageDto[]> {
+        const storages = await this.storageModel.find().exec();
+        console.log(storages);
+        if(!storages || !storages[0]){
+            throw new HttpException('Not Found ',404);
+        }
+        return storages;
     } 
 
-    public getStorgeById( id:string ){
-        const found = this.storages.find(item => item.id ===id)
-        return found;
+    public async getStorgeById( id:string ):Promise<StorageDto> {
+        const storage = await this.storageModel.findOne({id}).exec();
+        return storage;
     }
-    public putStorage(id:string){
-        const found = this.storages.find(item => item.id ===id)
-        if(!found){
-            throw new NotFoundException(`Storage with id:${id} not found`);
-        }
+    
+    public async postStorge(newObj :StorageDto){
+        const storage =await new this.storageModel(newObj);
+        //ตรวจสอบว่ามี Id ซ้ำรึเปล่า
+        const found = await this.getStorgeById(newObj.id);
+        console.log(found);
+        if(found){
+            // Update storage to database by id.
+            console.log('Update');
+            const objFilter = {"id":newObj.id};
+            const objUpdate = {$set:{"name":newObj.name,"barcode":newObj.barcode}};
+            const options = {upsert:true};
 
-        return "All";
-    }
-    public postStorge(storage){
-        const obj = this.getStorgeById(storage.id);
-        if(!obj){
-            console.log('New');
-            this.storages.push(storage)
+            const updated = await this.storageModel.updateOne(objFilter,objUpdate,options).exec();
+            return updated;
         }else{
-            console.log('Updated');
-            console.log('----------------------------------');
-            obj.barcode = storage.barcode;
-            obj.name = storage.name;
-            obj.lastUpdated = ''+Date.now();
+            // Add new storage to database
+            console.log('Add New.');
+            return storage.save();
         }
-        return true;
     }
 
-    public deleteStorage( id:string){
-        const found = this.storages.find(item => item.id ===id)
-        if(!found){
-            throw new NotFoundException(`Storage with id:${id} not found`);
+    public async deleteStorage( id:string){
+        const storage = await this.storageModel.deleteOne({id}).exec();
+        if(storage.deletedCount === 0){
+            throw new HttpException('Not Found ',404);
         }
-        this.storages = this.storages.filter( item =>{return item.id !== id} );
-        console.log(this.storages);
-        return true;
+        return storage;
     }
 
     

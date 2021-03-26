@@ -5,7 +5,7 @@ import { StoragesController } from './storages.controller';
 import { StoragesService } from './storages.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{name:'storages',schema:StorageSchema}])],
+  imports: [MongooseModule.forFeature([{name:'Storage',schema:StorageSchema}])],
   controllers: [StoragesController],
   providers: [StoragesService]
 })

@@ -3,5 +3,6 @@ export class StorageDto {
     readonly name: string;
     readonly created: Date;
     readonly status: number;
-    readonly lastUpdated: Date;
+    readonly barcode: string;
+    readonly lastUpdated: string;
 }

@@ -5,5 +5,5 @@ export const StorageSchema = new mongoose.Schema({
     name: String,
     created: Date,
     status: Number,
-    lastUpdated: Date
+    lastUpdated: String
 });
